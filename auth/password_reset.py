@@ -1,5 +1,7 @@
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
+
+RESET_TOKEN_LIFETIME = timedelta(minutes=30)
 
 
 def issue_reset_token(username: str) -> dict[str, object]:
@@ -7,4 +9,6 @@ def issue_reset_token(username: str) -> dict[str, object]:
 
 
 def is_reset_token_valid(reset_token: dict[str, object]) -> bool:
-    return True
+    issued_at = reset_token["issued_at"]
+    assert isinstance(issued_at, datetime)
+    return datetime.now() - issued_at < RESET_TOKEN_LIFETIME
